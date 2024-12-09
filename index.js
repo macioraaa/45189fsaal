@@ -19,6 +19,7 @@ const statusMessages = ["Ogląda VØLT STORE"];
 const statusTypes = ['dnd', 'idle'];
 let currentStatusIndex = 0;
 let currentTypeIndex = 0;
+let lastChannelName = ''; // Przechowuje ostatnią ustawioną nazwę kanału, aby unikać zbędnych zmian
 
 // Serwer HTTP
 const app = express();
@@ -59,10 +60,18 @@ function updateStatus() {
 
 // Aktualizacja nazwy kanału
 async function updateChannelName() {
-    const channel = await client.channels.fetch(CHANNEL_ID);
-    if (channel && channel.isTextBased()) {
-        const newName = `✅〢legit-check➜${repCount}`;
-        await channel.setName(newName).catch(console.error);
+    const newName = `✅〢legit-check➜${repCount}`;
+    if (newName === lastChannelName) return; // Unikaj zbędnych zmian
+
+    try {
+        const channel = await client.channels.fetch(CHANNEL_ID);
+        if (channel && channel.isTextBased()) {
+            await channel.setName(newName);
+            lastChannelName = newName; // Aktualizuj zapamiętaną nazwę
+            console.log('\x1b[32m[ CHANNEL ]\x1b[0m', `Updated channel name to: ${newName}`);
+        }
+    } catch (error) {
+        console.error('\x1b[31m[ ERROR ]\x1b[0m', 'Failed to update channel name:', error);
     }
 }
 
