@@ -61,7 +61,7 @@ function updateStatus() {
 async function updateChannelName() {
     const channel = await client.channels.fetch(CHANNEL_ID);
     if (channel && channel.isTextBased()) {
-        const newName = `✅〢legit-check➜${messageCount}`;
+        const newName = `✅〢legit-check➜${repCount}`;
         await channel.setName(newName).catch(console.error);
     }
 }
